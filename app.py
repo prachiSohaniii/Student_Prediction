@@ -10,7 +10,8 @@ model = pickle.load(open('student_performance_model.pkl', 'rb'))
 app = Flask(__name__)
 
 # Enable CORS specifically for React frontend
-CORS(app, resources={r"/predict": {"origins": "http://localhost:3000"}})
+CORS(app)  # allow all origins for all routes
+
 
 # Define preprocessing functions as per your preprocessing logic
 def encode_data(data):
