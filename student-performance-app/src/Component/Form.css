@@ -1,13 +1,11 @@
 .container {
   display: flex;
-  background-image: linear-gradient(
-    #0f2027,
-    #203a43,
-    #2c5364);
+  background-image: linear-gradient(#0f2027, #203a43, #2c5364);
   min-height: 100vh;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   padding: 40px;
   justify-content: space-between;
+  flex-wrap: wrap;
 }
 
 .left-side {
@@ -23,7 +21,6 @@
 
 .left-side p {
   font-size: 18px;
- 
 }
 
 .side-image {
@@ -51,7 +48,8 @@ form h2 {
   color: #333;
 }
 
-input, select {
+input,
+select {
   width: 100%;
   padding: 12px 15px;
   margin-bottom: 15px;
@@ -61,7 +59,8 @@ input, select {
   transition: 0.3s ease;
 }
 
-input:focus, select:focus {
+input:focus,
+select:focus {
   border-color: #2152bb;
   outline: none;
   box-shadow: 0 0 5px rgba(76, 175, 80, 0.2);
@@ -78,21 +77,25 @@ button {
   border-radius: 10px;
   cursor: pointer;
   transition: background 0.3s ease;
- 
 }
 
 button:hover {
-  background: linear-gradient(135deg, #388E3C, #1B5E20);
+  background: linear-gradient(135deg, #388e3c, #1b5e20);
+}
+
+button:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
 }
 
 .prediction-result {
   margin-top: 20px;
   font-size: 18px;
   font-weight: bold;
-  color: #4CAF50;
+  color: #4caf50;
   text-align: center;
 }
-/* Add these to your existing Form.css */
+
 .loader-overlay {
   display: flex;
   flex-direction: column;
@@ -113,8 +116,12 @@ button:hover {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .error-message {
@@ -125,11 +132,40 @@ button:hover {
   border-radius: 4px;
 }
 
-button:disabled {
-  background-color: #95a5a6;
-  cursor: not-allowed;
-}
 input::placeholder {
   color: black;
-  opacity: 1; /* Ensure it's fully visible */
+  opacity: 1;
+}
+
+/* ✅ Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    padding: 20px;
+    align-items: center;
+  }
+
+  .left-side,
+  .form-container {
+    width: 100%;
+    max-width: 500px;
+  }
+
+  .left-side {
+    padding: 20px 0;
+    text-align: center;
+  }
+
+  .side-image {
+    margin: 20px auto 0;
+    max-width: 80%;
+  }
+
+  form {
+    padding: 20px;
+  }
+
+  button {
+    width: 100%;
+  }
 }

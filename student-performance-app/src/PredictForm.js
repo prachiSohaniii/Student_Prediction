@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import style from "./Component/Form.css";
+import "./Component/Form.css"
 import { useNavigate } from "react-router-dom";
 
 const PredictForm = () => {
@@ -29,10 +29,8 @@ const PredictForm = () => {
     const averageScore =
       (Number(formData.mathScore) +
         Number(formData.readingScore) +
-        Number(formData.writingScore)) /
-      3;
+        Number(formData.writingScore)) / 3;
 
-    // Navigate early with a loading state
     navigate("/result", { state: { loading: true } });
 
     try {
@@ -44,7 +42,6 @@ const PredictForm = () => {
         }
       );
 
-      // Send prediction data after API call
       navigate("/result", {
         state: {
           prediction: response.data.predicted_performance_level,
@@ -91,11 +88,11 @@ const PredictForm = () => {
 
           <select name="race_ethnicity" onChange={handleChange} required>
             <option value="">Race/Ethnicity</option>
-            <option value="group A">Group A</option>
-            <option value="group B">Group B</option>
-            <option value="group C">Group C</option>
-            <option value="group D">Group D</option>
-            <option value="group E">Group E</option>
+            <option value="Group 1 - Urban Background">Group 1 - Urban Background</option>
+            <option value="Group 2 - Rural Background">Group 2 - Rural Background</option>
+            <option value="Group 3 - Suburban Region">Group 3 - Suburban Region</option>
+            <option value="Group 4 - Coastal Region">Group 4 - Coastal Region</option>
+            <option value="Group 5 - Diverse Culture">Group 5 - Diverse Culture</option>
           </select>
 
           <select
@@ -118,69 +115,57 @@ const PredictForm = () => {
             <option value="free/reduced">Free/Reduced</option>
           </select>
 
-          <select name="testPreparationCourse" onChange={handleChange} required>
+          <select
+            name="testPreparationCourse"
+            onChange={handleChange}
+            required
+          >
             <option value="">Test Preparation Course</option>
             <option value="none">None</option>
             <option value="completed">Completed</option>
           </select>
 
           <input
+           style={{
+            width: "94.5%",
+            // padding: "10px",
+            // margin: "10px 0",
+            borderRadius: "8px",
+          }}
             name="mathScore"
             type="number"
             placeholder="Math Score"
             onChange={handleChange}
             required
-            style={{
-              width: "94.5%",
-              // padding: "10px",
-              // margin: "10px 0",
-              borderRadius: "8px",
-            }}
           />
           <input
+           style={{
+            width: "94.5%",
+            // padding: "10px",
+            // margin: "10px 0",
+            borderRadius: "8px",
+          }}
             name="readingScore"
             type="number"
             placeholder="Reading Score"
             onChange={handleChange}
             required
-            style={{
-              width: "94.5%",
-              // padding: "10px",
-              // margin: "10px 0",
-              borderRadius: "8px",
-            }}
           />
           <input
+           style={{
+            width: "94.5%",
+            // padding: "10px",
+            // margin: "10px 0",
+            borderRadius: "8px",
+          }}
             name="writingScore"
             type="number"
             placeholder="Writing Score"
             onChange={handleChange}
             required
-            
-            style={{
-              width: "94.5%",
-              // padding: "10px",
-              // margin: "10px 0",
-              borderRadius: "8px",
-            }}
           />
-
           <div style={{ textAlign: "center", marginTop: "1rem" }}>
-            <button
-              type="submit"
-              style={{
-                padding: "10px 20px",
-                backgroundColor: "#007BFF",
-                color: "white",
-                border: "none",
-                borderRadius: "8px",
-                fontSize: "1rem",
-                cursor: "pointer",
-              }}
-            >
-              Predict
-            </button>
-          </div>
+          <button type="submit">Predict</button></div>
         </form>
       </div>
     </div>
