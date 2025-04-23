@@ -127,10 +127,13 @@ const PredictForm = () => {
 
           <input
            style={{
-            width: "94.5%",
-            // padding: "10px",
-            // margin: "10px 0",
+            width: "100%",
+            padding: "12px 16px",
+            marginBottom: "16px",
+            border: "1px solid #ccc",
             borderRadius: "8px",
+            fontSize: "16px",
+            boxSizing: "border-box", 
           }}
             name="mathScore"
             type="number"
@@ -140,10 +143,13 @@ const PredictForm = () => {
           />
           <input
            style={{
-            width: "94.5%",
-            // padding: "10px",
-            // margin: "10px 0",
+            width: "100%",
+            padding: "12px 16px",
+            marginBottom: "16px",
+            border: "1px solid #ccc",
             borderRadius: "8px",
+            fontSize: "16px",
+            boxSizing: "border-box", 
           }}
             name="readingScore"
             type="number"
@@ -153,10 +159,13 @@ const PredictForm = () => {
           />
           <input
            style={{
-            width: "94.5%",
-            // padding: "10px",
-            // margin: "10px 0",
+            width: "100%",
+            padding: "12px 16px",
+            marginBottom: "16px",
+            border: "1px solid #ccc",
             borderRadius: "8px",
+            fontSize: "16px",
+            boxSizing: "border-box", 
           }}
             name="writingScore"
             type="number"
