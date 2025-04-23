@@ -5,8 +5,7 @@ import numpy as np
 import gzip
 
 # Load the compressed model
-with gzip.open('student_performance_model_compressed.pkl', 'rb') as f:
-    model = joblib.load(f)
+model = joblib.load('student_performance_model_compressed.pkl')
 
 app = Flask(__name__)
 CORS(app)
