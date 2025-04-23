@@ -1,106 +1,92 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import pickle
+import joblib
 import numpy as np
+import gzip
 
-# Load trained model
-model = pickle.load(open('student_performance_model.pkl', 'rb'))
+# Load the compressed model
+with gzip.open('student_performance_model_compressed.pkl', 'rb') as f:
+    model = joblib.load(f)
 
-# Create Flask app
 app = Flask(__name__)
+CORS(app)
 
-# Enable CORS specifically for React frontend
-CORS(app)  # allow all origins for all routes
+# Feature order used during model training
+FEATURE_ORDER = [
+    'age', 'Medu', 'Fedu', 'traveltime', 'studytime', 'failures', 'famrel',
+    'freetime', 'goout', 'Walc', 'health', 'absences', 'G1', 'G2',
+    'school_1', 'Mjob_4', 'reason_1', 'guardian_1', 'schoolsup_1',
+    'paid_1', 'activities_1'
+]
 
-
-# Define preprocessing functions as per your preprocessing logic
-def encode_data(data):
-    # Encode categorical features using the same mapping logic from your preprocessing script
-    gender = 1 if data['gender'].lower() == 'female' else 0
-    lunch = 1 if data['lunch'].lower() == 'standard' else 0
-    test_prep = 1 if data['testPreparationCourse'].lower() == 'completed' else 0
-
-    # Encoding race_ethnicity
-    race_map = {
-        "Group 1 - Urban Background": 0,
-        "Group 2 - Rural Background": 1,
-        "Group 3 - Suburban Region": 2,
-        "Group 4 - Coastal Region": 3,
-        "Group 5 - Diverse Culture": 4
-    }
-    race_ethnicity = race_map.get(data['race_ethnicity'], 0)  # Ensure correct key
-
-    # Encoding parental_level_of_education
-    education_map = {
-        "some high school": 0,
-        "high school": 1,
-        "some college": 2,
-        "associate's degree": 3,
-        "bachelor's degree": 4,
-        "master's degree": 5
-    }
-    parental_education = education_map.get(data['parentalLevelOfEducation'].lower(), 1)  # Corrected key
-
-    # Calculate average score
-    math_score = int(data['mathScore'])  # Convert to integer
-    reading_score = int(data['readingScore'])  # Convert to integer
-    writing_score = int(data['writingScore'])  # Convert to integer
-    average_score = (math_score + reading_score + writing_score) / 3  # Calculate average score
-
-    # Determine performance level (based on average score)
-    if average_score >= 80:
-        performance_level = 2  # High
-    elif average_score >= 60:
-        performance_level = 1  # Medium
+# Convert G3 score into a performance level
+def categorize_performance(score):
+    if score >= 15:
+        return "High"
+    elif score >= 10:
+        return "Medium"
     else:
-        performance_level = 0  # Low
+        return "Low"
 
-    return {
-        'gender': gender,
-        'race_ethnicity': race_ethnicity,
-        'parental_education': parental_education,
-        'lunch': lunch,
-        'test_prep': test_prep,
-        'math_score': math_score,
-        'reading_score': reading_score,
-        'writing_score': writing_score,
-        'average_score': average_score,
-        'performance_level': performance_level
-    }
+# Function to preprocess user input
+def preprocess_input(data):
+    # Encode binary categorical features
+    school    = 1 if data.get('school') == 'MS' else 0
+    Mjob      = 1 if data.get('Mjob') == 'teacher' else 0
+    reason     = 1 if data.get('reason') == 'home' else 0
+    guardian   = 1 if data.get('guardian') == 'mother' else 0
+    schoolsup  = 1 if data.get('schoolsup') == 'yes' else 0
+    paid      = 1 if data.get('paid') == 'yes' else 0
+    activities = 1 if data.get('activities') == 'yes' else 0
 
+    # Prepare full input list in correct order
+    return [
+        int(data.get('age', 0)),
+        int(data.get('Medu', 0)),
+        int(data.get('Fedu', 0)),
+        int(data.get('traveltime', 1)),
+        int(data.get('studytime', 1)),
+        int(data.get('failures', 0)),
+        int(data.get('famrel', 3)),
+        int(data.get('freetime', 3)),
+        int(data.get('goout', 3)),
+        int(data.get('Walc', 1)),
+        int(data.get('health', 3)),
+        int(data.get('absences', 0)),
+        int(data.get('G1', 10)),
+        int(data.get('G2', 10)),
+        school,
+        Mjob,
+        reason,
+        guardian,
+        schoolsup,
+        paid,
+        activities
+    ]
+
+# Define prediction route
 @app.route('/predict', methods=['POST'])
 def predict():
-    data = request.get_json()
-    print("Received data:", data)
+    try:
+        data = request.get_json()
+        print("Received raw input:", data)
 
-    # Preprocess the data using the encode_data function
-    processed_data = encode_data(data)
+        # Encode and preprocess input
+        input_data = preprocess_input(data)
+        input_array = np.array([input_data])
 
-    # Prepare input data for model prediction
-    input_data = np.array([[
-        processed_data['gender'],
-        processed_data['race_ethnicity'],
-        processed_data['parental_education'],
-        processed_data['lunch'],
-        processed_data['test_prep'],
-        processed_data['math_score'],
-        processed_data['reading_score'],
-        processed_data['writing_score'],
-        processed_data['average_score']
-    ]])
+        # Predict G3 score
+        predicted_score = model.predict(input_array)[0]
+        performance_level = categorize_performance(predicted_score)
 
-    # Predict the performance level
-    pred = model.predict(input_data)[0]
+        return jsonify({
+            'predicted_G3_score': round(float(predicted_score), 2),
+            'performance_level': performance_level
+        })
 
-    # Map prediction to performance level
-    level_map = {0: "Low", 1: "Medium", 2: "High"}
-    performance = level_map.get(pred, "Unknown")
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
-    return jsonify({
-        'predicted_performance_level': performance,
-        'average_score': processed_data['average_score']
-    })
-
+# Start server
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
-
