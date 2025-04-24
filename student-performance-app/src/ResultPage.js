@@ -72,18 +72,6 @@ const ResultPage = () => {
                 <p>This student may need additional support to improve their performance.</p>
               )}
 
-              <div className="input-summary">
-                <h3>Input Summary:</h3>
-                <ul>
-                  <li>Gender: {formData?.gender}</li>
-                  <li>Race/Ethnicity: {formData?.race_ethnicity}</li>
-                  <li>Parental Education: {formData?.parentalLevelOfEducation}</li>
-                  <li>Math Score: {formData?.mathScore}</li>
-                  <li>Reading Score: {formData?.readingScore}</li>
-                  <li>Writing Score: {formData?.writingScore}</li>
-                </ul>
-              </div>
-
               <button onClick={handleBack}lassName="back-button">
                 ← Back to Form
               </button>
