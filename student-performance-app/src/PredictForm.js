@@ -95,7 +95,7 @@ const PredictForm = () => {
           on student background and test scores.
         </p>
         <img
-          src="/college-project-pana.png"
+          src="/college project-pana.png"
           alt="Student Study"
           className="side-image"
         />
